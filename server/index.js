@@ -28,22 +28,22 @@ var app = express();
   'mediadevices'
 ].forEach(function(example) {
   var examplePath = path.join(__dirname, `../examples/${example}/public`);
-  app.use(`/${example}`, express.static(examplePath));
+  app.use(`/webrtc/${example}`, express.static(examplePath));
 });
 
 // Set up the path for the quickstart.
 var quickstartPath = path.join(__dirname, '../quickstart/public');
-app.use('/quickstart', express.static(quickstartPath));
+app.use('/webrtc/quickstart', express.static(quickstartPath));
 
 // Set up the path for the examples page.
 var examplesPath = path.join(__dirname, '../examples');
-app.use('/examples', express.static(examplesPath));
+app.use('/webrtc/examples', express.static(examplesPath));
 
 /**
  * Default to the Quick Start application.
  */
-app.get('/', function(request, response) {
-  response.redirect('/quickstart');
+app.get('/webrtc', function(request, response) {
+  response.redirect('/webrtc/quickstart');
 });
 
 /**
@@ -51,7 +51,7 @@ app.get('/', function(request, response) {
  * username for the client requesting a token, and takes a device ID as a query
  * parameter.
  */
-app.get('/token', function(request, response) {
+app.get('/webrtc/token', function(request, response) {
   var identity = randomName();
 
   // Create an access token which we will sign and return to the client,

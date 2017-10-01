@@ -40,7 +40,7 @@ function detachParticipantTracks(participant) {
 window.addEventListener('beforeunload', leaveRoomIfJoined);
 
 // Obtain a token from the server in order to connect to the Room.
-$.getJSON('/token', function(data) {
+$.getJSON('/webrtc/token', function(data) {
   identity = data.identity;
   document.getElementById('room-controls').style.display = 'block';
 
