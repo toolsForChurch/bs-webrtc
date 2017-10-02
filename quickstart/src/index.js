@@ -6,6 +6,12 @@ var activeRoom;
 var previewTracks;
 var identity;
 var roomName;
+var trackMode='all';
+var mute = false;
+var randomName = require('./randomname');
+var conversationsClient;
+var activeConversation;
+var accessManager;
 
 // Attach the Tracks to the DOM.
 function attachTracks(tracks, container) {
@@ -40,17 +46,13 @@ function detachParticipantTracks(participant) {
 window.addEventListener('beforeunload', leaveRoomIfJoined);
 
 // Obtain a token from the server in order to connect to the Room.
-$.getJSON('/webrtc/token', function(data) {
+$.getJSON('/webrtc/token?name='+randomName(), function(data) {
   identity = data.identity;
-  document.getElementById('room-controls').style.display = 'block';
+
 
   // Bind button to join Room.
   document.getElementById('button-join').onclick = function() {
-    roomName = document.getElementById('room-name').value;
-    if (!roomName) {
-      alert('Please enter a room name.');
-      return;
-    }
+    roomName = "biblestudy";
 
     log("Joining room '" + roomName + "'...");
     var connectOptions = {
@@ -74,11 +76,18 @@ $.getJSON('/webrtc/token', function(data) {
     log('Leaving room...');
     activeRoom.disconnect();
   };
+    // Bind button switch input.
+    document.getElementById('switch-input').onclick = function() {
+
+
+    };
+
 });
 
 // Successfully connected!
 function roomJoined(room) {
   window.room = activeRoom = room;
+
 
   log("Joined as '" + identity + "'");
   document.getElementById('button-join').style.display = 'none';
@@ -136,6 +145,29 @@ function roomJoined(room) {
     document.getElementById('button-join').style.display = 'inline';
     document.getElementById('button-leave').style.display = 'none';
   });
+    // Bind button to mute.
+    document.getElementById('mute').onclick = function() {
+      if (!mute){
+        log("Mute")
+          room.localParticipant.audioTracks.forEach(function(track){
+                  track.disable();
+              }
+          )
+          mute=true;
+          log("Mic  mute")
+      }
+      else{
+          room.localParticipant.audioTracks.forEach(function(track){
+                  track.enable();
+              }
+          )
+          mute=false;
+          log("Mic un mute")
+      }
+
+
+
+    };
 }
 
 // Preview LocalParticipant's Tracks.
@@ -158,6 +190,7 @@ document.getElementById('button-preview').onclick = function() {
 
 // Activity log.
 function log(message) {
+
   var logDiv = document.getElementById('log');
   logDiv.innerHTML += '<p>&gt;&nbsp;' + message + '</p>';
   logDiv.scrollTop = logDiv.scrollHeight;

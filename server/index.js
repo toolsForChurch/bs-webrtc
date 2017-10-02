@@ -15,7 +15,7 @@ var path = require('path');
 var AccessToken = require('twilio').jwt.AccessToken;
 var VideoGrant = AccessToken.VideoGrant;
 var express = require('express');
-var randomName = require('./randomname');
+
 
 // Create Express webapp.
 var app = express();
@@ -52,7 +52,11 @@ app.get('/webrtc', function(request, response) {
  * parameter.
  */
 app.get('/webrtc/token', function(request, response) {
-  var identity = randomName();
+    var query = require('url').parse(request.url,true).query;
+  var identity = query.name;
+  console.log(identity)
+
+
 
   // Create an access token which we will sign and return to the client,
   // containing the grant we just created.

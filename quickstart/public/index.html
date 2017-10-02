@@ -1,26 +1,41 @@
 <!DOCTYPE html>
 <html>
+<html lang="en">
 <head>
-  <title>Twilio Video - Video Quickstart</title>
-  <link rel="stylesheet" href="index.css">
-</head>
-<body>
-<div id="remote-media"></div>
-<div id="controls">
-  <div id="preview">
-    <p class="instructions">Hello Beautiful</p>
-    <div id="local-media"></div>
-    <button id="button-preview">Preview My Camera</button>
-  </div>
-  <div id="room-controls">
-    <p class="instructions">Room Name:</p>
-    <input id="room-name" type="text" placeholder="Enter a room name" />
-    <button id="button-join">Join Room</button>
-    <button id="button-leave">Leave Room</button>
-  </div>
-  <div id="log"></div>
-</div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bs</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="bs.css">
 
+</head>
+<body bgcolor="aqua">
+<div class="container-fluid" style="height: 100%;background-color: black">
+<div class="row" style="height: 90%">
+   <div class="col-md-6" style="background-color: white;height: 100%">
+       <div id="local-media"></div>
+       <div id="room-controls">
+           <button id="button-preview">Preview My Camera</button>
+           <button id="button-join">Call</button>
+           <button id="button-leave">Leave Room</button>
+           <button id="switch-input">Switch Input</button>
+           <button id="mute">Mute</button>
+       </div>
+
+
+   </div>
+    <div class="col-md-6" style="background-color: gainsboro;height: 100%">
+        <h1>Peers</h1>
+        <div  class="row" >
+            <div class="col-md-12" id="remote-media">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+    <div id="log"></div>
+</div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="index.js"></script>
 </body>
