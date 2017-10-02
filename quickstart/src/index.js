@@ -20,6 +20,9 @@ function roomJoined(room) {
     log("Joined as '" + identity + "'");
     document.getElementById('button-join-audio').style.display = 'none';
     document.getElementById('button-join-video').style.display = 'none';
+    document.getElementById('show-video').style.display = 'inline';
+    document.getElementById('mute').style.display = 'inline';
+    document.getElementById('button-leave').style.display = 'inline';
 
     // Attach LocalParticipant's Tracks, if not already attached.
     var previewContainer = document.getElementById('local-media');
