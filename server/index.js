@@ -33,7 +33,32 @@ var app = express();
 
 // Set up the path for the quickstart.
 var quickstartPath = path.join(__dirname, '../quickstart/public');
-app.use('/webrtc/quickstart', express.static(quickstartPath));
+ app.use('/webrtc/call', express.static(quickstartPath));
+// // app.get('/webrtc/call', function(request, response) {
+// //
+// //     var query = request.query;
+// //
+// //     if(query.id!=undefined){
+// //         response.sendFile(quickstartPath);
+// //     }
+// //     else{
+// //
+// //         response.sendFile(path.join(__dirname,'../quickstart/public/404.html'));
+// //     }
+// //
+// // });
+// app.use('/webrtc/call/',function(request, response,next) {
+//     var query = request.query;
+//
+//     if(query.id!=undefined){
+//         response.sendFile(quickstartPath);
+//     }
+//     else{
+//
+//         response.sendFile(path.join(__dirname,'../quickstart/public/404.html'));
+//     }
+//     next();
+// });
 
 // Set up the path for the examples page.
 var examplesPath = path.join(__dirname, '../examples');
@@ -43,7 +68,17 @@ app.use('/webrtc/examples', express.static(examplesPath));
  * Default to the Quick Start application.
  */
 app.get('/webrtc', function(request, response) {
-  response.redirect('/webrtc/quickstart');
+
+    var query = request.query;
+
+   if(query.id!=undefined){
+       response.redirect('/webrtc/call/?id='+query.id);
+   }
+   else{
+
+       response.sendFile(path.join(__dirname,'../quickstart/public/404.html'));
+   }
+
 });
 
 /**

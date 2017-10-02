@@ -11,6 +11,89 @@ var mute = false;
 var showVideo=true;
 var randomName = require('./randomname');
 
+// Successfully connected!
+
+function roomJoined(room) {
+    window.room = activeRoom = room;
+
+
+    log("Joined as '" + identity + "'");
+    document.getElementById('button-join-audio').style.display = 'none';
+    document.getElementById('button-join-video').style.display = 'none';
+
+    // Attach LocalParticipant's Tracks, if not already attached.
+    var previewContainer = document.getElementById('local-media');
+    if (!previewContainer.querySelector('video')) {
+        attachParticipantTracks(room.localParticipant, previewContainer);
+    }
+    if(!showVideo){
+        room.localParticipant.videoTracks.forEach(function (track) {
+                track.disable();
+            }
+        )
+        showVideo = false;
+        $('#show-video').text("Share Video");
+    }
+
+
+    // Attach the Tracks of the Room's Participants.
+    room.participants.forEach(function(participant) {
+        log("Already in Room: '" + participant.identity + "'");
+        var previewContainer = document.getElementById('remote-media');
+        attachParticipantTracks(participant, previewContainer);
+    });
+
+    // When a Participant joins the Room, log the event.
+    room.on('participantConnected', function(participant) {
+        log("Joining: '" + participant.identity + "'");
+    });
+
+    // When a Participant adds a Track, attach it to the DOM.
+    room.on('trackAdded', function(track, participant) {
+        log(participant.identity + " added track: " + track.kind);
+        var previewContainer = document.getElementById('remote-media');
+        attachTracks([track], previewContainer);
+    });
+
+    // When a Participant removes a Track, detach it from the DOM.
+    room.on('trackRemoved', function(track, participant) {
+        log(participant.identity + " removed track: " + track.kind);
+        detachTracks([track]);
+    });
+
+    // When a Participant leaves the Room, detach its Tracks.
+    room.on('participantDisconnected', function(participant) {
+        log("Participant '" + participant.identity + "' left the room");
+        detachParticipantTracks(participant);
+    });
+
+    // Once the LocalParticipant leaves the room, detach the Tracks
+    // of all Participants, including that of the LocalParticipant.
+    room.on('disconnected', function() {
+        log('Left');
+        if (previewTracks) {
+            previewTracks.forEach(function(track) {
+                track.stop();
+            });
+        }
+        detachParticipantTracks(room.localParticipant);
+        room.participants.forEach(detachParticipantTracks);
+        activeRoom = null;
+        document.getElementById('button-join-audio').style.display = 'inline';
+        document.getElementById('button-join-video').style.display = 'inline';
+        document.getElementById('button-leave').style.display = 'none';
+    });
+    // Bind button to mute.
+    document.getElementById('mute').onclick = function() {
+        toogleAudio(room);
+
+    };
+    document.getElementById('show-video').onclick = function() {
+        toogleVideo(room);
+
+    };
+}
+
 let toogleAudio = function (room) {
     if (!mute) {
         room.localParticipant.audioTracks.forEach(function (track) {
@@ -49,23 +132,32 @@ let toogleVideo = function (room) {
     }
 };
 let makeCall = function (data) {
-    roomName = "biblestudy";
+    let searchParams = new URLSearchParams(window.location.search)
+    if(searchParams.has('id')){
+        roomName = searchParams.get('id')
+        var connectOptions = {
+            name: roomName,
+            logLevel: 'debug'
+        };
 
-    log("Joining room '" + roomName + "'...");
-    var connectOptions = {
-        name: roomName,
-        logLevel: 'debug'
-    };
+        if (previewTracks) {
+            connectOptions.tracks = previewTracks;
+        }
 
-    if (previewTracks) {
-        connectOptions.tracks = previewTracks;
+        // Join the Room with the token from the server and the
+        // LocalParticipant's Tracks.
+        Video.connect(data.token, connectOptions).then(roomJoined, function (error) {
+            log('Could not connect to Twilio: ' + error.message);
+        });
+        log("Joining room '" + roomName + "'...");
+    }
+    else{
+    window.location=$(location).attr('host')+"/webrtc";
     }
 
-    // Join the Room with the token from the server and the
-    // LocalParticipant's Tracks.
-    Video.connect(data.token, connectOptions).then(roomJoined, function (error) {
-        log('Could not connect to Twilio: ' + error.message);
-    });
+
+
+
 };
 
 // Attach the Tracks to the DOM.
@@ -100,6 +192,8 @@ function detachParticipantTracks(participant) {
 // from the room, if joined.
 window.addEventListener('beforeunload', leaveRoomIfJoined);
 
+
+
 // Obtain a token from the server in order to connect to the Room.
 
 $.getJSON('/webrtc/token?name='+randomName(), function(data) {
@@ -124,115 +218,34 @@ $.getJSON('/webrtc/token?name='+randomName(), function(data) {
     // Bind button to leave Room.
   document.getElementById('button-leave').onclick = function() {
     log('Leaving room...');
+      document.getElementById('show-video').style.display = 'none';
+      document.getElementById('mute').style.display = 'none';
+
     activeRoom.disconnect();
   };
 
 
 });
 
-// Successfully connected!
 
-function roomJoined(room) {
-    window.room = activeRoom = room;
-
-
-  log("Joined as '" + identity + "'");
-    document.getElementById('button-join-audio').style.display = 'none';
-    document.getElementById('button-join-video').style.display = 'none';
-    document.getElementById('button-leave').style.display = 'inline';
-    document.getElementById('show-video').style.display = 'inline';
-    document.getElementById('mute').style.display = 'inline';
-
-  // Attach LocalParticipant's Tracks, if not already attached.
-  var previewContainer = document.getElementById('local-media');
-  if (!previewContainer.querySelector('video')) {
-    attachParticipantTracks(room.localParticipant, previewContainer);
-  }
-if(!showVideo){
-    room.localParticipant.videoTracks.forEach(function (track) {
-            track.disable();
-        }
-    )
-    showVideo = false;
-    $('#show-video').text("Share Video");
-}
-
-
-  // Attach the Tracks of the Room's Participants.
-  room.participants.forEach(function(participant) {
-    log("Already in Room: '" + participant.identity + "'");
-    var previewContainer = document.getElementById('remote-media');
-    attachParticipantTracks(participant, previewContainer);
-  });
-
-  // When a Participant joins the Room, log the event.
-  room.on('participantConnected', function(participant) {
-    log("Joining: '" + participant.identity + "'");
-  });
-
-  // When a Participant adds a Track, attach it to the DOM.
-  room.on('trackAdded', function(track, participant) {
-    log(participant.identity + " added track: " + track.kind);
-    var previewContainer = document.getElementById('remote-media');
-    attachTracks([track], previewContainer);
-  });
-
-  // When a Participant removes a Track, detach it from the DOM.
-  room.on('trackRemoved', function(track, participant) {
-    log(participant.identity + " removed track: " + track.kind);
-    detachTracks([track]);
-  });
-
-  // When a Participant leaves the Room, detach its Tracks.
-  room.on('participantDisconnected', function(participant) {
-    log("Participant '" + participant.identity + "' left the room");
-    detachParticipantTracks(participant);
-  });
-
-  // Once the LocalParticipant leaves the room, detach the Tracks
-  // of all Participants, including that of the LocalParticipant.
-  room.on('disconnected', function() {
-    log('Left');
-    if (previewTracks) {
-      previewTracks.forEach(function(track) {
-        track.stop();
-      });
-    }
-    detachParticipantTracks(room.localParticipant);
-    room.participants.forEach(detachParticipantTracks);
-    activeRoom = null;
-    document.getElementById('button-join-audio').style.display = 'inline';
-    document.getElementById('button-join-video').style.display = 'inline';
-    document.getElementById('button-leave').style.display = 'none';
-  });
-    // Bind button to mute.
-    document.getElementById('mute').onclick = function() {
-      toogleAudio(room);
-
-    };
-    document.getElementById('show-video').onclick = function() {
-        toogleVideo(room);
-
-    };
-}
 
 // Preview LocalParticipant's Tracks.
-document.getElementById('button-preview').onclick = function() {
-  var localTracksPromise = previewTracks
-    ? Promise.resolve(previewTracks)
-    : Video.createLocalTracks();
-
-  localTracksPromise.then(function(tracks) {
-    window.previewTracks = previewTracks = tracks;
-    var previewContainer = document.getElementById('local-media');
-    if (!previewContainer.querySelector('video')) {
-      attachTracks(tracks, previewContainer);
-    }
-  }, function(error) {
-    console.error('Unable to access local media', error);
-    log('Unable to access Camera and Microphone');
-  });
-};
+// document.getElementById('button-preview').onclick = function() {
+//   var localTracksPromise = previewTracks
+//     ? Promise.resolve(previewTracks)
+//     : Video.createLocalTracks();
+//
+//   localTracksPromise.then(function(tracks) {
+//     window.previewTracks = previewTracks = tracks;
+//     var previewContainer = document.getElementById('local-media');
+//     if (!previewContainer.querySelector('video')) {
+//       attachTracks(tracks, previewContainer);
+//     }
+//   }, function(error) {
+//     console.error('Unable to access local media', error);
+//     log('Unable to access Camera and Microphone');
+//   });
+// };
 
 // Activity log.
 function log(message) {
@@ -247,4 +260,15 @@ function leaveRoomIfJoined() {
   if (activeRoom) {
     activeRoom.disconnect();
   }
+
 }
+
+$( document ).ready(function() {
+    var searchParams = new URLSearchParams(window.location.search)
+    if(!searchParams.has('id')){
+        console.log($(location).attr('host')+"/webrtc")
+        var link = $(location).attr('host')+"/webrtc"
+        window.location.href= ((location.protocol == "https:")?"https://":"http")+"://"+link;
+    }
+
+})
