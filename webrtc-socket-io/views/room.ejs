@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name='description' content='WebRTC Reference App' />
+		<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<script>var HOST_ADDRESS='<%= hostAddress %>';</script>  
+		<script src='/socket.io/socket.io.js'></script>
+		<script src='/js/lib/adapter.js'></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script src="http://cdn.temasys.io/adapterjs/0.15.x/adapter.min.js"></script>
+		<script src='/js/meeting.js'></script>
+		<script src='/js/room.js'></script>
+		<link rel="stylesheet" type="text/css" href="/css/room.css" media="screen" />
+		<title>Video Conference</title>
+	</head>
+
+	<body>
+
+			<div class="videoContainer" >
+			<div class="col-sm-12 " >
+				<div id="videos">
+					<div id="videosWrapper">
+						<div id="localVideoWrap" class='videoWrap'>
+							<video class="videoBox" id="localVideo" autoplay></video>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			</div>
+
+			<div class="toogle" >
+				<div class="col-sm-12" >
+					<button id="micMenu"> Audio</button>
+					<button id="videoMenu"> Video</button></div>
+			</div>
+
+
+
+
+
+
+	</body>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</html>
