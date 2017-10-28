@@ -1,6 +1,7 @@
 'use strict';
 
 var Video = require('twilio-video');
+require('adapterjs');
 
 var activeRoom;
 var previewTracks;
@@ -140,7 +141,8 @@ let makeCall = function (data) {
         roomName = searchParams.get('id')
         var connectOptions = {
             name: roomName,
-            logLevel: 'debug'
+            logLevel: 'debug',
+            video: { name: 'camera' }
         };
 
         if (previewTracks) {
@@ -152,7 +154,20 @@ let makeCall = function (data) {
         Video.connect(data.token, connectOptions).then(roomJoined, function (error) {
             log('Could not connect to Twilio: ' + error.message);
         });
-        log("Joining room '" + roomName + "'...");
+        // log("Joining room '" + roomName + "'...");
+        // Video.createLocalAudioTrack({ name: 'microphone' });
+        // var audioContext = typeof AudioContext !== 'undefined'
+        //     ? new AudioContext()
+        //     : new webkitAudioContext()
+        // var mediaStreamDestinationNode = audioContext.createMediaStreamDestination()
+        // var mediaStream = mediaStreamDestinationNode.stream
+        // var mediaStreamTrack = mediaStream.getAudioTracks()[0]
+        // var localAudioTrack = new Video.LocalAudioTrack(mediaStreamTrack)
+        // Video.createLocalVideoTrack().then(function(localVideoTrack) {
+        //     return Video.connect(data.token, {
+        //         tracks: [localAudioTrack, localVideoTrack]
+        //     })
+        // })
     }
     else{
     window.location=$(location).attr('host')+"/webrtc";
@@ -213,6 +228,7 @@ $.getJSON('/webrtc/token?name='+randomName(), function(data) {
   };
 
     document.getElementById('button-join-video').onclick = function() {
+        $("#local-media video").css({"width": "200px", "height": "200px"});
 
         makeCall(data);
     };

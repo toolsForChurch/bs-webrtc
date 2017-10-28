@@ -19,7 +19,8 @@
     "clean:examples:mediadevices": "rimraf examples/mediadevices/public/index.js examples/mediadevices/public/helpers.js",
     "clean:quickstart": "rimraf quickstart/public/index.js",
     "start": "npm run clean && npm run build && node server",
-    "server":"node server"
+    "quick": "npm run clean:quickstart && npm run build:quickstart && node server",
+    "server": "node server"
   },
   "repository": {
     "type": "git",
@@ -41,9 +42,12 @@
   },
   "homepage": "https://github.com/twilio/video-quickstart-js#readme",
   "dependencies": {
+    "adapterjs": "^0.15.0",
+    "cors": "^2.8.4",
     "dotenv": "^4.0.0",
     "express": "^4.15.2",
     "express-jquery": "^1.8.3",
+    "node-cron": "^1.2.1",
     "prismjs": "^1.6.0",
     "stackblur-canvas": "^1.4.0",
     "twilio": "^3.0.0-rc.16",

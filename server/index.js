@@ -9,16 +9,22 @@
  */
 require('dotenv').load();
 
+
 var fs = require('fs');
 var http = require('http');
 var path = require('path');
 var AccessToken = require('twilio').jwt.AccessToken;
 var VideoGrant = AccessToken.VideoGrant;
 var express = require('express');
+var cors = require('cors');
 
 
 // Create Express webapp.
 var app = express();
+
+
+app.use(cors());
+
 
 // Set up the paths for the examples.
 [

@@ -3,3 +3,14 @@ When ever a user opens our platform we get user backend identifier
 when you make a call call twilio ivite with an array of these identifiers
 
 https://www.twilio.com/docs/guides/video/conversations#dis
+
+
+To enable support of safari
+When a group is created we have to run
+biblestudy_1 = group name unique
+
+curl -XPOST 'https://video.twilio.com/v1/Rooms' \
+  -u 'SK------:secret' \
+  -d 'UniqueName=biblestudy_1' \
+  -d 'Type=group' \
+  -d 'VideoCodecs=H264'

@@ -1,29 +1,44 @@
 <!DOCTYPE html>
 <html>
+<html lang="en">
 <head>
-  <title>Twilio Video - Video Quickstart</title>
-  <link rel="stylesheet" href="index.css">
-</head>
-<body>
-<div id="remote-media"></div>
-<div id="controls">
-  <div id="preview">
-    <p class="instructions">Hello Beautiful</p>
-    <div id="local-media"></div>
-    <button id="button-preview">Preview My Camera</button>
-  </div>
-  <div id="room-controls">
-    <p class="instructions">Room Name:</p>
-    <input id="room-name" type="text" placeholder="Enter a room name" />
-    <button id="button-join">Join Room</button>
-    <button id="button-leave">Leave Room</button>
-    <button id="switch-input">Switch Input</button>
-    <button id="mute">Mute</button>
-  </div>
-  <div id="log"></div>
-</div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Bs</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bs.css">
 
+</head>
+<body bgcolor="aqua">
+<div class="container-fluid" style="height: 100%;background-color: black">
+  <div class="row" style="height: 100%">
+
+    <div class="col-md-12" style="background-color: gainsboro;height: 90%">
+      <div  class="row" >
+        <div class="col-md-12" id="remote-media">
+
+
+        </div>
+        <div class="col-md-6 col-md-offset-4">
+          <div id="local-media"></div>
+
+        </div>
+
+      </div>
+
+    </div>
+    <div id="room-controls">
+      <button id="button-preview">Preview My Camera</button>
+      <button id="button-join-audio">Audio Call</button>
+      <button id="button-join-video">Video Call</button>
+      <button id="button-leave" style="display: none">Quit</button>
+      <button id="show-video"  style="display: none">Turn off Video</button>
+      <button id="mute" style="display: none">Mute</button>
+    </div>
+  </div>
+</div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="index.js"></script>
+
+
 </body>
 </html>
